@@ -1,118 +1,103 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
-void encryption();
-void decryption();
-int key2;
-void menu()
-{
-	int option;
-	do
-	{
-		cout<<endl;
-		cout<<"Please select one option ..."<<endl;
-		cout << "1.Encryption..." << endl;
-		cout << "2.Decryption..." << endl;
-		cout << "0.EXIT..." << endl;
-		cin >> option;
-		switch (option)
-		{
-		case 1:
-			encryption();
-			break;
-		case 2:
-			decryption();
-			break;
-		default:
-			cout << "PLEASE ENTER CORRECT OPTION ..." << endl;
-			break;
-		}
-	} while (option != 0);
+void cipher();
+//int key2;
 
-}
-void encryption()
+void cipher()
 {
 	string st;
 	char ch;
 	int st_size,key;
-	cin.ignore();
-	cout << "Please enter string which you want to encrypt...";
-	getline(cin,st);
-	st_size = st.length();
-	cout << "Please enter key for encryption...";
-	cin >> key;
+	fstream myfile("plaintext.txt");
+	myfile >> std::noskipws;
+	while(!myfile.eof())
+	{
+		myfile.get(ch);
+		st_size++;
+	}
+	myfile.close();
+	char *array;
+	array = new char [st_size];
+	myfile.open("plaintext.txt");
+	for(int i=0;  i< st_size; i++)
+	{
+		myfile >> ch;
+		array[i] = ch;
+	}
+	myfile.close();
 	
-	int* array = new int[st_size];
+	for(int i=0; i<st_size; i++)
+		cout << array[i];
+	
+	cout << "Enter cipher key: ";
+	cin >> key;
 	
 	char* store1 = new char[st_size];
 	char* store2 = new char[st_size];
 	for(int i=0;i<st_size;i++)
 	{
-		if(st[i]==' ')
-		{
-			*(array + i) = st[i];
-		}
-		else 
-		{
-			*(array + i) = st[i];
-			store1[i] = *(array + i);
-			*(array + i) = st[i] + key;
-			key2=*(array+i)-st[i];
-			store2[i] = *(array + i);
-			
-		}
+		array[i] = array[i] + key;
 	}
-	cout<<"cipher_text is as follow...."<<endl;
+	cout<<"\nFor decryption....."<<endl;
+	system("Pause");
+	system("cls");
+	myfile.open("ciphertext.txt", ios::app);
+	cout<<"ENCRYPTED TEXT: \n"<<endl;
 	for(int j=0;j<st_size;j++)
 	{
-		ch = *(array + j);
-		cout << ch ;
+		cout << array[j];
+		myfile << array[j];
+	}
+	myfile.close();
+	myfile.open("ciphertext.txt", ios::app);
+	for(int j=0;j<st_size;j++)
+	{
+		myfile >> array[j];
 	}
 	cout << endl;
 	cout<<endl;
-	cout << "Encryption keys are as follow......" << endl;
-	for (int j = 0; j < st_size; j++)
-	{
-		cout << store1[j] << "..." << store2[j] << endl;
+
+	for(int i=0; i<st_size; i++){
+		array[i] = array[i] - key;
 	}
-	cout<<endl;
-
-}
-void decryption()
-{
-	string st;
-	char ch;
-	int st_size, key;
-	cin.ignore();
-	cout << "Please enter string which you want to encrypt...";
-	getline(cin, st);
-	st_size = st.length();
-
 	
-	int* array = new int[st_size];
-	for (int i = 0; i < st_size; i++)
-	{
-		if (st[i] == ' ')
-		{
-			*(array + i) = st[i];
-		}
-		else
-		{
-			*(array + i) = st[i] - key2;
-		}
-	}
-
-	for (int j = 0; j < st_size; j++)
-	{
-		ch = *(array + j);
-		cout << ch;
-	}
-	cout << endl;
-
+	cout << "\nDECRYPTED TEXT: \n"<<endl;
+	for(int i=0; i<st_size; i++){
+		cout << array[i];
+		
+		
+	} 
 
 }
+
 int main()
 {
-	menu();
-}
+	int option;
+	do
+	{
+		cout<<"======================="<<endl;
+		cout<<"    CAESAR'S CIPHER"<<endl;
+		cout<<"======================="<<endl;
+		cout << "1. Encrypt/Decrypt" << endl;
+		cout << "0. EXIT" << endl;
 
+		cout<<"Enter your choice: ";
+		cin >> option;
+		switch (option)
+		{
+		case 1:
+			cipher();
+			break;
+		case 0:
+			exit(1);
+			break;
+			
+		default:
+			cout << "Incorrect option, retry!" << endl;
+			break;
+		}
+	} while (1);
+
+}
